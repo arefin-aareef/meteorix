@@ -5,6 +5,9 @@ const apiUrl =
 const searchBox = document.querySelector(".search input");
 const searchButton = document.querySelector(".search button");
 const weatherIcon = document.querySelector(".weather-icon");
+const toggleButton = document.querySelector(".toggle");
+
+let isCelsius = true;
 
 async function checkWeather(city) {
   const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
@@ -16,8 +19,14 @@ async function checkWeather(city) {
     var data = await response.json();
     console.log(data);
     document.querySelector(".city").innerHTML = data.name;
-    document.querySelector(".temp").innerHTML =
-      Math.round(data.main.temp) + "°c";
+    if (isCelsius) {
+        document.querySelector(".temp").innerHTML =
+          Math.round(data.main.temp) + "°C";
+      } else {
+        const tempFahrenheit = (data.main.temp * 9) / 5 + 32;
+        document.querySelector(".temp").innerHTML =
+          Math.round(tempFahrenheit) + "°F";
+      }
     document.querySelector(".humidity").innerHTML = data.main.humidity + " %";
     document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
 
@@ -41,3 +50,8 @@ async function checkWeather(city) {
 searchButton.addEventListener("click", () => {
   checkWeather(searchBox.value);
 });
+
+toggleButton.addEventListener("click", () => {
+    isCelsius = !isCelsius;
+    checkWeather(searchBox.value);
+  });
